@@ -27,7 +27,7 @@ structure JSON : JSON
           | helper x = [x]
       in
         String.implode
-          (foldr op@ [] (map helper (String.explode s)))
+          (fold_rev (curry op@) (map helper (String.explode s)) [])
       end
     
     (*replaces ~ to - *)
@@ -73,7 +73,7 @@ structure JSON : JSON
     and enc_list [] = "[]"
       | enc_list l =
         let
-            val e = foldr (fn(a,b) => (enc_value a) ^ "," ^ b) "" l
+            val e = fold_rev (fn a => fn b => (enc_value a) ^ "," ^ b) l ""
         in
             "[" ^ String.substring(e, 0, (String.size e)-1) ^ "]"
         end

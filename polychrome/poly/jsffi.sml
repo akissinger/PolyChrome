@@ -1,4 +1,4 @@
-structure jsffi : JSFFI =
+structure jsffi  =
 struct
 
     exception Error of unit
@@ -49,7 +49,7 @@ struct
                  |> JSON.add ("f", JSON.String f)
                  |> JSON.add ("r", JSON.Bool r)
         in
-            foldl (fn (v, tab) => JSON.add ("arg1", v) tab) x args
+            fold (fn v => fn tab => JSON.add ("arg1", v) tab) args x
         end
     fun JSONReqStr2 f r args = JSON.encode (JSONReq2 f r args)
     structure Memory = struct

@@ -29,7 +29,7 @@ struct
       | string_of_eventtype mousemove = "mousemove"
       
     (* we'll keep event callbacks here *)
-    val eventCallbackTab = ref (Tab.empty : (HTMLElement * EventType * EventCallback) Tab.T)
+    val eventCallbackTab = Unsynchronized.ref (Tab.empty : (HTMLElement * EventType * EventCallback) Tab.T)
     fun handle_event id event = let
             val (_, _, EventCallback f) = (Tab.get (!eventCallbackTab) (Name.mk id)) handle UNDEF => (raise Error ()) (* TODO, more informative error?*)
             val _ = f (Event event)
@@ -38,7 +38,7 @@ struct
         in () end
     
     (* we'll keep timeout and interval callbacks here *)
-    val timerCallbackTab = ref (Tab.empty : (TimerCallback * fptr * int) Tab.T)
+    val timerCallbackTab = Unsynchronized.ref (Tab.empty : (TimerCallback * fptr * int) Tab.T)
     fun handle_timeout f_id = let
             val (TimerCallback f, _, _) = Tab.get (!timerCallbackTab) (Name.mk f_id) handle UNDEF => (raise Error ()) (* TODO, more informative error?*)
             val _ = f ()
@@ -88,8 +88,8 @@ struct
     fun getHTMLCollectionItem (HTMLCollection x) n = HTMLElement (exec_js_get x (Int.toString n) [])
 
     (* events *)
-    fun getClientX (Event e) = valOf (Int.fromString (exec_js_get e "clientX" []))
-    fun getClientY (Event e) = valOf (Int.fromString (exec_js_get e "clientY" []))
+    fun getClientX (Event e) = Option.valOf (Int.fromString (exec_js_get e "clientX" []))
+    fun getClientY (Event e) = Option.valOf (Int.fromString (exec_js_get e "clientY" []))
     fun addEventListener_ (HTMLElement e) et f add_function_reference = let
             val callback = "val _ = DOM.handle_event {id} {arg} ;"
             val id = add_function_reference callback

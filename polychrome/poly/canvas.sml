@@ -19,8 +19,8 @@ struct
     fun fill (Context c) = exec_js c "fill" []
     fun fillRect (Context c) x y w h = exec_js c "fillRect" [arg.int x, arg.int y, arg.int w, arg.int h]
     fun fillStyle (Context c) style = exec_js_set c "fillStyle" [arg.string style]
-    fun canvasWidth (Context c) = valOf (Int.fromString (exec_js_get c "canvas.width" []))
-    fun canvasHeight (Context c) = valOf (Int.fromString (exec_js_get c "canvas.height" []))
+    fun canvasWidth (Context c) = Option.valOf (Int.fromString (exec_js_get c "canvas.width" []))
+    fun canvasHeight (Context c) = Option.valOf (Int.fromString (exec_js_get c "canvas.height" []))
     
     end
 end
