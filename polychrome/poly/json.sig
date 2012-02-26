@@ -4,7 +4,7 @@ sig
 	exception notobj_exn of unit
 
 	structure Tab : NAME_TAB
-	structure Name : SSTR_NAMES
+	structure Name : SNAME
 
 	datatype T =
 		Bool of bool

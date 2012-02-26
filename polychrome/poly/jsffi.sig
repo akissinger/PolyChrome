@@ -5,7 +5,7 @@ sig
     exception Error of unit
     
     structure Tab : NAME_TAB
-    structure Name : SSTR_NAMES
+    structure Name : SNAME
     
     
     (* this is used in combination with the exec_js_r and exec_js*)
