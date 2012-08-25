@@ -11,15 +11,15 @@ sig
     (* this is used in combination with the exec_js_r and exec_js*)
     structure arg :
     sig
-        val string : string -> JSON.T list
-        val reference : fptr -> JSON.T list
-        val real : real -> JSON.T list
-        val object : JSON.T -> JSON.T list
-        val null : unit -> JSON.T list
-        val list : JSON.T list -> JSON.T list
-        val int : int -> JSON.T list
-        val callback : string -> JSON.T list
-        val bool : bool -> JSON.T list
+        val string : string -> Json.json list
+        val reference : fptr -> Json.json list
+        val real : real -> Json.json list
+        val object : Json.json -> Json.json list
+        val null : unit -> Json.json list
+        val list : Json.json list -> Json.json list
+        val int : int -> Json.json list
+        val callback : string -> Json.json list
+        val bool : bool -> Json.json list
     end
     
     (* these are used to call JS functions
@@ -27,10 +27,10 @@ sig
        function to convert the returned string to an appropriate type *)
     (* args: an fptr to an object, a function name, an argument list *)
     (* e.g. exec_js_r "document|" "getElementById" [arg.string "something"] *)
-    val exec_js_r : string -> string -> JSON.T list list -> string
-    val exec_js : string -> string -> JSON.T list list -> unit
-    val exec_js_get : string -> string -> JSON.T list list -> string
-    val exec_js_set : string -> string -> JSON.T list list -> unit
+    val exec_js_r : string -> string -> Json.json list list -> string
+    val exec_js : string -> string -> Json.json list list -> unit
+    val exec_js_get : string -> string -> Json.json list list -> string
+    val exec_js_set : string -> string -> Json.json list list -> unit
     
     (* this must be called after handling each event *)
     val ready : unit -> unit

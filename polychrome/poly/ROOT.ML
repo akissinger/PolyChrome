@@ -1,6 +1,8 @@
+(*PolyML.SaveState.loadState "../../../isaplib/heaps/all.polyml-heap";*)
+
 (* load needed libs  *)
-use "json.sig";
-use "json.sml";
+(*use "json.sig";
+use "json.sml";*)
 
 (* very basic profiling *)
 (*use "profiling.sml";*)
