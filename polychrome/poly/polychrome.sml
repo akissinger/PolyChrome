@@ -1,6 +1,5 @@
 structure PolyChrome
 = struct
-    open Json.Data
     exception DOMExn of string
 
     (* IMPROVE: make var names reflect socket function *)
@@ -9,7 +8,7 @@ structure PolyChrome
        event handling, as well as console input   *)
     val socket1 = Unsynchronized.ref (NONE : Socket.active INetSock.stream_sock option)
 
-    (* responses for JS wrappers go through here *)
+    (* responses for Json.String wrappers go through here *)
     val socket2 = Unsynchronized.ref (NONE : Socket.active INetSock.stream_sock option)
 
     (* constants for socket communication *)
@@ -165,12 +164,12 @@ structure PolyChrome
                            then Json.empty
                            else
                            Json.empty
-                           |> Json.update ("type", JI 0)
-                           |> Json.update ("r", JI 0)
-                           |> Json.update ("output", (JS output_str))
+                           |> Json.update ("type", Json.Int 0)
+                           |> Json.update ("r", Json.Int 0)
+                           |> Json.update ("output", (Json.String output_str))
             val json_obj = if worked
                 then json_obj
-                else Json.update ("type", JI 1) json_obj
+                else Json.update ("type", Json.Int 1) json_obj
         in
             if (output_str="") then () else send_request (Json.string_of json_obj)
         end
