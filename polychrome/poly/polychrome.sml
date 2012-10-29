@@ -161,17 +161,14 @@ structure PolyChrome
               (* finally, print out any messages in the output buffer *)
             val output_str = output();
             val json_obj = if output_str = ""
-                           then Json.empty
+                           then Json.Object Json.empty_obj
                            else
-                           Json.empty
-                           |> Json.update ("type", Json.Int 0)
-                           |> Json.update ("r", Json.Int 0)
-                           |> Json.update ("output", (Json.String output_str))
-            val json_obj = if worked
-                then json_obj
-                else Json.update ("type", Json.Int 1) json_obj
+                           Json.mk_object [
+                              ("type", Json.Int (if worked then 0 else 1)),
+                              ("r", Json.Int 0),
+                              ("output", Json.String output_str)]
         in
-            if (output_str="") then () else send_request (Json.string_of json_obj)
+            if (output_str="") then () else send_request (Json.encode json_obj)
         end
         
     (*****************************************************************************)

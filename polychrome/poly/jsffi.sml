@@ -23,12 +23,13 @@ struct
     fun send (m) = PolyChrome.send_request m
     fun recv () = PolyChrome.recv_response ()
     
-    fun JSONReq t obj f r args = Json.empty
-            |> Json.update ("type", Json.Int t)
-            |> Json.update ("obj", Json.String obj)
-            |> Json.update ("f", Json.String f)
-            |> Json.update ("r", Json.Bool r)
-            |> Json.update ("args", Json.Array (map (fn (x) => Json.Array (x)) args))
+    fun JSONReq t obj f r args =
+      Json.mk_object [
+        ("type", Json.Int t),
+        ("obj", Json.String obj),
+        ("f", Json.String f),
+        ("r", Json.Bool r),
+        ("args", Json.Array (map (fn x => Json.Array (x)) args))]
     fun JSONReqStr t obj f r args  = Json.string_of (JSONReq t obj f r args)
     
     fun exec_js obj f args = send (JSONReqStr 2 obj f false args)
@@ -36,22 +37,23 @@ struct
     fun exec_js_set obj f args = send (JSONReqStr 3 obj f false args);
     fun exec_js_get obj f args = (send (JSONReqStr 3 obj f true args); recv())
     
-    val readySignal = Json.string_of (Json.empty
-            |> Json.update ("type", Json.Int 5)
-            |> Json.update ("r", Json.Bool false))
+    val readySignal = Json.encode (Json.mk_object [
+                        ("type", Json.Int 5),
+                        ("r", Json.Bool false)])
     fun ready () = send readySignal
     
     (*Memory management*)
     fun JSONReq2 f r args =
-        let
-            val x = Json.empty
-                 |> Json.update ("type", Json.Int 4) 
-                 |> Json.update ("f", Json.String f)
-                 |> Json.update ("r", Json.Bool r)
-        in
-            fold (fn v => fn tab => Json.update ("arg1", v) tab) args x
-        end
-    fun JSONReqStr2 f r args = Json.string_of (JSONReq2 f r args)
+      Json.mk_object (
+        [
+          ("type", Json.Int 4),
+          ("f", Json.String f),
+          ("r", Json.Bool r)
+        ] @
+        map_index (fn (i,arg) => ("arg" ^ Int.toString (i+1), arg)) args
+      )
+    
+    fun JSONReqStr2 f r args = Json.encode (JSONReq2 f r args)
     structure Memory = struct
         fun addFunctionReference f = let
                 val _ = send(JSONReqStr2 "addFunctionReference" true [Json.String f])
